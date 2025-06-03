@@ -1,3 +1,4 @@
+import os
 import logging
 import asyncio
 from telegram import (
@@ -20,7 +21,7 @@ from telegram.ext import (
 BOT_TOKEN = "7358926740:AAGfwIacwgrVHcueGyMvV0ftBSlTXPu1kJ4"
 
 # =====================================
-# الرابط الخارجي الثابت (الـURL الذي أعطيه Render)
+# الرابط الخارجي الثابت (الـURL الذي أعطاه Render)
 # =====================================
 EXTERNAL_URL = "https://telebot-8o93.onrender.com"
 WEBHOOK_URL = f"{EXTERNAL_URL}/{BOT_TOKEN}"
