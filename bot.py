@@ -40,11 +40,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # =====================================
-# حالة البوت (مفعل/موقف)
-# =====================================
-bot_active = True
-
-# =====================================
 # بيانات الروابط والأزرار
 # =====================================
 ALL_BUTTONS = [
@@ -184,10 +179,6 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """معالج الرسائل النصية الأساسية"""
-    global bot_active
-    if not bot_active:
-        return  # إذا كان البوت موقوفاً فلا يرد على أي رسالة عادية
-
     message = update.message
     user = update.effective_user
     chat = update.effective_chat
@@ -227,38 +218,7 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
         return
 
 # =====================================
-# أوامر إيقاف وتشغيل البوت (للمشرفين فقط)
-# =====================================
-async def disable_bot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    /وقف
-    يوقف البوت عن الرد على الرسائل. للمشرفين فقط.
-    """
-    global bot_active
-    user = update.effective_user
-    if not await is_user_admin(update, user.id):
-        await update.effective_message.reply_text("📛 أنت لست مشرفًا، لا يمكنك إيقاف البوت.")
-        return
-
-    bot_active = False
-    await update.effective_message.reply_text("⏸️ تم إيقاف البوت. لن يتم الرد على سوى أوامر التشغيل (/تشغيل).")
-
-async def enable_bot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    /تشغيل
-    يعيد تفعيل البوت للرد على الرسائل. للمشرفين فقط.
-    """
-    global bot_active
-    user = update.effective_user
-    if not await is_user_admin(update, user.id):
-        await update.effective_message.reply_text("📛 أنت لست مشرفًا، لا يمكنك تشغيل البوت.")
-        return
-
-    bot_active = True
-    await update.effective_message.reply_text("▶️ تم تشغيل البوت مجدّدًا. الآن سأرد على الرسائل والأوامر.")
-
-# =====================================
-# دوال أوامر المشرفين المعتادة
+# دوال أوامر المشرفين
 # =====================================
 async def ban_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -444,7 +404,7 @@ async def warn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await message.reply_text("❌ لا يمكن تحذير مشرف أو مالك.")
         return
 
-    chat_warnings = warnings_counter.setdefault(chat.id, {})
+    chat_warnings = warnings-counter.setdefault(chat.id, {})
     count = chat_warnings.get(target.id, 0) + 1
     chat_warnings[target.id] = count
 
@@ -650,15 +610,11 @@ def main():
     try:
         application = Application.builder().token(BOT_TOKEN).build()
 
-        # إضافة أوامر البدء والمساعدة
+        # إضافة الـ Handlers الأساسية
         application.add_handler(CommandHandler("start", start_command))
         application.add_handler(CommandHandler("help", help_command))
 
-        # إضافة أوامر التفعيل والإيقاف للمشرفين
-        application.add_handler(CommandHandler("وقف", disable_bot_command))
-        application.add_handler(CommandHandler("تشغيل", enable_bot_command))
-
-        # إضافة أوامر المشرفين الأخرى
+        # إضافة أوامر المشرفين
         application.add_handler(CommandHandler("ban", ban_command))
         application.add_handler(CommandHandler("unban", unban_command))
         application.add_handler(CommandHandler("kick", kick_command))
@@ -670,7 +626,7 @@ def main():
         application.add_handler(CommandHandler("lock", lock_command))
         application.add_handler(CommandHandler("unlock", unlock_command))
 
-        # معالجة الرسائل النصية العامة
+        # معالجة الرسائل النصية العامة (تنفيذ فقط عند المطابقة التامة للكلمة)
         application.add_handler(
             MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text_message)
         )
