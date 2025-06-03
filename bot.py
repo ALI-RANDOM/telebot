@@ -20,7 +20,7 @@ from telegram.ext import (
 # =====================================
 BOT_TOKEN = os.getenv("7358926740:AAGfwIacwgrVHcueGyMvV0ftBSlTXPu1kJ4")
 # Render يوفر المتغير RENDER_EXTERNAL_URL كعنوان HTTPS للتطبيق (مثل: https://my-app.onrender.com)
-EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
+EXTERNAL_URL = os.getenv("https://telebot-8o93.onrender.com")
 if BOT_TOKEN and EXTERNAL_URL:
     WEBHOOK_URL = f"{EXTERNAL_URL}/{BOT_TOKEN}"
 else:
