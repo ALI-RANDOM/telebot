@@ -1,4 +1,3 @@
-import os
 import logging
 import asyncio
 from telegram import (
@@ -16,15 +15,15 @@ from telegram.ext import (
 )
 
 # =====================================
-# إعدادات البوت (التوكن مُضمن ثابتًا)
+# إعدادات البوت (التوكن ثابتًا)
 # =====================================
 BOT_TOKEN = "7358926740:AAGfwIacwgrVHcueGyMvV0ftBSlTXPu1kJ4"
-# استخدم المتغيّر RENDER_EXTERNAL_URL الذي يضبطه Render تلقائيًا
-EXTERNAL_URL = os.getenv("https://telebot-8o93.onrender.com")
-if EXTERNAL_URL:
-    WEBHOOK_URL = f"{EXTERNAL_URL}/{BOT_TOKEN}"
-else:
-    WEBHOOK_URL = None
+
+# =====================================
+# الرابط الخارجي الثابت (الـURL الذي أعطيه Render)
+# =====================================
+EXTERNAL_URL = "https://telebot-8o93.onrender.com"
+WEBHOOK_URL = f"{EXTERNAL_URL}/{BOT_TOKEN}"
 
 # =====================================
 # إعداد نظام التسجيل
@@ -603,7 +602,7 @@ def main():
         logger.error("❌ التوكن غير محدد!")
         return
     if not WEBHOOK_URL:
-        logger.error("❌ لم يتم تحديد EXTERNAL_URL (RENDER_EXTERNAL_URL)!")
+        logger.error("❌ لم يتم تحديد EXTERNAL_URL!")
         return
 
     logger.info("🚀 بدء تشغيل البوت مع Webhook...")
