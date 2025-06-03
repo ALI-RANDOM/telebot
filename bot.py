@@ -40,7 +40,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # =====================================
-# بيانات الروابط والأزرار مع الترتيب الأبجدي وبإضافة الزر الجديد
+# بيانات الروابط والأزرار
 # =====================================
 ALL_BUTTONS = [
     ("💰 الأجر", "https://t.me/Ibrhaimp"),
@@ -160,6 +160,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="HTML"
     )
 
+
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """أمر المساعدة /help"""
     user = update.effective_user
@@ -177,6 +178,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="HTML"
     )
 
+
 async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """معالج الرسائل النصية الأساسية"""
     message = update.message
@@ -186,8 +188,8 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
     
     logger.info(f"رسالة من {user.first_name} (ID: {user.id}) في {chat.type}: {message.text}")
     
-    # كلمة "هيل" تعرض جميع الأزرار
-    if "هيل" in text:
+    # كلمة "هيل" فقط (بالمساواة) تعرض جميع الأزرار
+    if text == "هيل":
         keyboard = []
         for button_text, button_url in ALL_BUTTONS:
             keyboard.append([InlineKeyboardButton(button_text, url=button_url)])
@@ -199,10 +201,10 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
         )
         return
     
-    # التحقق من الكلمات الأخرى باستخدام المرادفات
+    # التحقق من الكلمات المفردة فقط (المساواة) باستخدام المرادفات
     for entry in BUTTONS_DATA:
         for kw in entry["keywords"]:
-            if kw in text:
+            if text == kw:
                 keyboard = [[InlineKeyboardButton(entry["text"], url=entry["url"])]]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 await message.reply_text(
@@ -212,10 +214,11 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
                 )
                 return
     
-    # اختبار البوت
+    # اختبار البوت (رسائل "تست" أو "test" أو "اختبار" فقط)
     if text in ["تست", "test", "اختبار"]:
         await message.reply_text(f"✅ البوت يعمل بشكل ممتاز، تفضل {user.mention_html()}!")
         return
+
 
 # =====================================
 # دوال أوامر المشرفين
@@ -250,6 +253,7 @@ async def ban_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"خطأ أثناء حظر المستخدم: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة الحظر.")
 
+
 async def unban_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     /unban
@@ -282,6 +286,7 @@ async def unban_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"خطأ أثناء رفع الحظر: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة رفع الحظر.")
 
+
 async def kick_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     /kick
@@ -312,6 +317,7 @@ async def kick_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logger.error(f"خطأ أثناء طرد المستخدم: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة الطرد.")
+
 
 async def mute_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -347,6 +353,7 @@ async def mute_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"خطأ أثناء كتم المستخدم: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة الكتم.")
 
+
 async def unmute_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     /unmute
@@ -380,6 +387,7 @@ async def unmute_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logger.error(f"خطأ أثناء رفع الكتم: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة رفع الكتم.")
+
 
 async def warn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -449,6 +457,7 @@ async def warn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"خطأ أثناء تنفيذ أمر warn: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة التحذير.")
 
+
 async def clearwarn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     /clearwarn
@@ -483,6 +492,7 @@ async def clearwarn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await message.reply_text(f"ℹ️ لا توجد تحذيرات مسجّلة للمستخدم {target.first_name}.")
         logger.info(f"محاولة إزالة تحذيرات عن {target.id} ولكن لا توجد تحذيرات.")
 
+
 async def pin_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     /pin
@@ -512,6 +522,7 @@ async def pin_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logger.error(f"خطأ أثناء تثبيت الرسالة: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة التثبيت.")
+
 
 async def lock_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -551,6 +562,7 @@ async def lock_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"خطأ أثناء قفل المجموعة: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة قفل المجموعة.")
 
+
 async def unlock_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     /unlock
@@ -583,6 +595,7 @@ async def unlock_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"خطأ أثناء فتح المجموعة: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة فتح المجموعة.")
 
+
 # =====================================
 # معالج الأخطاء العام
 # =====================================
@@ -595,6 +608,7 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
         except:
             pass
 
+
 # =====================================
 # الدالة الرئيسية لتشغيل البوت عبر Webhook
 # =====================================
@@ -606,7 +620,7 @@ def main():
         logger.error("❌ لم يتم تحديد EXTERNAL_URL!")
         return
 
-    logger.info("🚀 بدء تشغيل البوت مع Webhook...")
+    logger.info("🚀 بدء تشغيل البوت مع Webhook (حذف الرسائل القديمة)…")
     try:
         application = Application.builder().token(BOT_TOKEN).build()
 
@@ -634,17 +648,22 @@ def main():
         # معالج الأخطاء
         application.add_error_handler(error_handler)
 
+        # حذف أي تحديثات قديمة قبل تشغيل webhook
+        application.bot.delete_webhook(drop_pending_updates=True)
+
         # تشغيل webhook: الاستماع على المنفذ الذي يوفره Render (ENV PORT)، ومسار URL هو التوكن
         port = int(os.getenv("PORT", "8443"))
         application.run_webhook(
             listen="0.0.0.0",
             port=port,
             url_path=BOT_TOKEN,
-            webhook_url=WEBHOOK_URL
+            webhook_url=WEBHOOK_URL,
+            drop_pending_updates=True
         )
 
     except Exception as e:
         logger.error(f"❌ فشل في تشغيل البوت: {e}", exc_info=True)
+
 
 if __name__ == "__main__":
     main()
