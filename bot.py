@@ -1,4 +1,4 @@
-
+import os
 import logging
 import asyncio
 from telegram import (
@@ -16,18 +16,24 @@ from telegram.ext import (
 )
 
 # =====================================
-# إعدادات البوت
+# إعدادات البوت من متغيرات البيئة
 # =====================================
-BOT_TOKEN = "7358926740:AAGfwIacwgrVHcueGyMvV0ftBSlTXPu1kJ4" 
+BOT_TOKEN = os.getenv("7358926740:AAGfwIacwgrVHcueGyMvV0ftBSlTXPu1kJ4")
+# Render يوفر المتغير RENDER_EXTERNAL_URL كعنوان HTTPS للتطبيق (مثل: https://my-app.onrender.com)
+EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
+if BOT_TOKEN and EXTERNAL_URL:
+    WEBHOOK_URL = f"{EXTERNAL_URL}/{BOT_TOKEN}"
+else:
+    WEBHOOK_URL = None
 
 # =====================================
 # إعداد نظام التسجيل
 # =====================================
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler('bot.log', encoding='utf-8'),
+        logging.FileHandler("bot.log", encoding="utf-8"),
         logging.StreamHandler()
     ]
 )
@@ -44,7 +50,10 @@ ALL_BUTTONS = [
     ("🎯 المهام", "https://t.me/+LK8rr9LJXk1kYmE0"),
     ("🧾 الوصف", "https://t.me/HELL_GTA"),
     ("🔗 رتب", "https://t.me/+RiPkO-JHXt9iMTZi"),  # الزر الجديد
-    ("🎮 رابط كلان هيل", "https://socialclub.rockstargames.com/crew/the_best_colors_to_u/wall"),
+    (
+        "🎮 رابط كلان هيل",
+        "https://socialclub.rockstargames.com/crew/the_best_colors_to_u/wall",
+    ),
 ]
 
 # =====================================
@@ -55,56 +64,56 @@ BUTTONS_DATA = [
         "keywords": ["قوانين", "القوانين"],
         "text": "📌 القوانين",
         "url": "https://t.me/+1BUMvsFtRc00MGQ8",
-        "message": " إليك رابط القوانين"
+        "message": "إليك رابط القوانين"
     },
     {
         "keywords": ["مهام", "المهام"],
         "text": "🎯 المهام",
         "url": "https://t.me/+LK8rr9LJXk1kYmE0",
-        "message": " إليك رابط المهام"
+        "message": "إليك رابط المهام"
     },
     {
         "keywords": ["كلان", "الكلان"],
         "text": "🎮 رابط كلان هيل",
         "url": "https://socialclub.rockstargames.com/crew/the_best_colors_to_u/wall",
-        "message": " إليك رابط الكلان"
+        "message": "إليك رابط الكلان"
     },
     {
         "keywords": ["توزيع", "التوزيع", "توزيعات"],
         "text": "📤 التوزيع",
         "url": "https://t.me/+sP1KiRwb07ViYWNk",
-        "message": " إليك رابط التوزيع"
+        "message": "إليك رابط التوزيع"
     },
     {
         "keywords": ["وصف", "الوصف"],
         "text": "🧾 الوصف",
         "url": "https://t.me/HELL_GTA",
-        "message": " إليك رابط الوصف"
+        "message": "إليك رابط الوصف"
     },
     {
         "keywords": ["دعم", "الدعم"],
         "text": "🧑‍💼 الدعم",
         "url": "https://t.me/Hell_supportbot",
-        "message": " إليك رابط الدعم"
+        "message": "إليك رابط الدعم"
     },
     {
         "keywords": ["أجر", "اجر", "راتب"],
-        "text": " الأجر",
+        "text": "💰 الأجر",
         "url": "https://t.me/Ibrhaimp",
-        "message": " إليك رابط الأجر"
+        "message": "إليك رابط الأجر"
     },
     {
         "keywords": ["رتب", "رتبه", "الرتبه"],
         "text": "🔗 رتب",
         "url": "https://t.me/+RiPkO-JHXt9iMTZi",
-        "message": " إليك رابط الرتب"
+        "message": "إليك رابط الرتب"
     },
 ]
 
 # =====================================
 # رابط الصورة عند القفل/الفتح
 # =====================================
-LOCK_IMAGE_URL = "https://i.postimg.cc/Mcsv2bz9/lock-image.jpg"  # رابط مباشر للصورة
+LOCK_IMAGE_URL = "https://i.postimg.cc/Mcsv2bz9/lock-image.jpg"
 
 # =====================================
 # متغيرات المراقبة (مثلاً لعدد التحذيرات)
@@ -126,7 +135,6 @@ async def is_user_admin(update: Update, user_id: int) -> bool:
 # =====================================
 # دوال الأوامر الأساسية
 # =====================================
-
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """أمر البدء /start"""
     user = update.effective_user
@@ -152,7 +160,6 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode="HTML"
     )
 
-
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """أمر المساعدة /help"""
     user = update.effective_user
@@ -169,7 +176,6 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=reply_markup,
         parse_mode="HTML"
     )
-
 
 async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """معالج الرسائل النصية الأساسية"""
@@ -200,7 +206,7 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
                 keyboard = [[InlineKeyboardButton(entry["text"], url=entry["url"])]]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 await message.reply_text(
-                    f"{entry['message']}  يا عسل    {user.mention_html()} 👤",
+                    f"{entry['message']} يا عسل {user.mention_html()} 👤",
                     reply_markup=reply_markup,
                     parse_mode="HTML"
                 )
@@ -214,7 +220,6 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
 # =====================================
 # دوال أوامر المشرفين
 # =====================================
-
 async def ban_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     /ban
@@ -244,7 +249,6 @@ async def ban_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logger.error(f"خطأ أثناء حظر المستخدم: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة الحظر.")
-
 
 async def unban_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -278,7 +282,6 @@ async def unban_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"خطأ أثناء رفع الحظر: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة رفع الحظر.")
 
-
 async def kick_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     /kick
@@ -309,7 +312,6 @@ async def kick_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logger.error(f"خطأ أثناء طرد المستخدم: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة الطرد.")
-
 
 async def mute_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -345,7 +347,6 @@ async def mute_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"خطأ أثناء كتم المستخدم: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة الكتم.")
 
-
 async def unmute_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     /unmute
@@ -379,7 +380,6 @@ async def unmute_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logger.error(f"خطأ أثناء رفع الكتم: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة رفع الكتم.")
-
 
 async def warn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -417,12 +417,12 @@ async def warn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             await message.reply_text(
                 f"⚠️ تم إرسال التحذير الثالث للمستخدم {target.first_name}.\n"
-                f"🚫 لذلك، تم كتمه مؤقتًا لمدة ثلاث ايام  ."
+                f"🚫 لذلك، تم كتمه مؤقتًا لمدة ثلاث أيام."
             )
             chat_warnings[target.id] = 0
 
             async def unmute_after_delay():
-                await asyncio.sleep(259200)  # 600 ثانية = 10 دقائق
+                await asyncio.sleep(259200)  # 3 أيام بالثواني
                 try:
                     await context.bot.restrict_chat_member(
                         chat_id=chat.id,
@@ -446,9 +446,8 @@ async def warn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             logger.info(f"تم تحذير {target.id} (العدد: {count}) بأمر من {user.id} في دردشة {chat.id}")
     except Exception as e:
-        logger.error(f"خطأ أثناء الملف warn: {e}")
+        logger.error(f"خطأ أثناء تنفيذ أمر warn: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة التحذير.")
-
 
 async def clearwarn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -484,7 +483,6 @@ async def clearwarn_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await message.reply_text(f"ℹ️ لا توجد تحذيرات مسجّلة للمستخدم {target.first_name}.")
         logger.info(f"محاولة إزالة تحذيرات عن {target.id} ولكن لا توجد تحذيرات.")
 
-
 async def pin_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     /pin
@@ -495,7 +493,7 @@ async def pin_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = update.effective_message
 
     if not await is_user_admin(update, user.id):
-        await message.reply_text(" 📛 أنت لست مشرفًا في القروب تكرار الامر قد يعرضك للكتم .")
+        await message.reply_text("📛 أنت لست مشرفًا في القروب تكرار الامر قد يعرضك للكتم.")
         return
 
     if not message.reply_to_message:
@@ -514,7 +512,6 @@ async def pin_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logger.error(f"خطأ أثناء تثبيت الرسالة: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة التثبيت.")
-
 
 async def lock_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
@@ -554,7 +551,6 @@ async def lock_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"خطأ أثناء قفل المجموعة: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة قفل المجموعة.")
 
-
 async def unlock_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     /unlock
@@ -587,38 +583,38 @@ async def unlock_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"خطأ أثناء فتح المجموعة: {e}")
         await message.reply_text("❌ حدث خطأ أثناء محاولة فتح المجموعة.")
 
-
 # =====================================
 # معالج الأخطاء العام
 # =====================================
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
     """معالج الأخطاء"""
     logger.error(f"خطأ في البوت: {context.error}", exc_info=True)
-    if update and hasattr(update, 'effective_message') and update.effective_message:
+    if update and hasattr(update, "effective_message") and update.effective_message:
         try:
             await update.effective_message.reply_text("❌ حدث خطأ، يرجى المحاولة مرة أخرى.")
         except:
             pass
 
-
 # =====================================
-# الدالة الرئيسية لتشغيل البوت
+# الدالة الرئيسية لتشغيل البوت عبر Webhook
 # =====================================
 def main():
-    if not BOT_TOKEN or BOT_TOKEN.startswith("YOUR"):
-        logger.error("❌ التوكن غير صحيح! يرجى إدخال توكن صحيح من BotFather")
+    if not BOT_TOKEN:
+        logger.error("❌ التوكن غير محدد في متغير البيئة BOT_TOKEN!")
         return
-    
-    logger.info("🚀 بدء تشغيل البوت...")
-    
+    if not WEBHOOK_URL:
+        logger.error("❌ لم يتم تحديد EXTERNAL_URL (RENDER_EXTERNAL_URL) أو BOT_TOKEN في البيئة!")
+        return
+
+    logger.info("🚀 بدء تشغيل البوت مع Webhook...")
     try:
         application = Application.builder().token(BOT_TOKEN).build()
-        
-        # أوامر أساسية
+
+        # إضافة الـ Handlers الأساسية
         application.add_handler(CommandHandler("start", start_command))
         application.add_handler(CommandHandler("help", help_command))
-        
-        # أوامر المشرفين
+
+        # إضافة أوامر المشرفين
         application.add_handler(CommandHandler("ban", ban_command))
         application.add_handler(CommandHandler("unban", unban_command))
         application.add_handler(CommandHandler("kick", kick_command))
@@ -629,25 +625,26 @@ def main():
         application.add_handler(CommandHandler("pin", pin_command))
         application.add_handler(CommandHandler("lock", lock_command))
         application.add_handler(CommandHandler("unlock", unlock_command))
-        
+
         # معالجة الرسائل النصية العامة
-        application.add_handler(MessageHandler(
-            filters.TEXT & ~filters.COMMAND,
-            handle_text_message
-        ))
-        
+        application.add_handler(
+            MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text_message)
+        )
+
         # معالج الأخطاء
         application.add_error_handler(error_handler)
-        
-        logger.info("✅ البوت جاهز للعمل! يمكنك الآن اختبار الأوامر في المجموعة.")
-        application.run_polling(
-            drop_pending_updates=True,
-            allowed_updates=Update.ALL_TYPES
+
+        # تشغيل webhook: الاستماع على المنفذ الذي يوفره Render (ENV PORT)، ومسار URL هو التوكن
+        port = int(os.getenv("PORT", "8443"))
+        application.run_webhook(
+            listen="0.0.0.0",
+            port=port,
+            url_path=BOT_TOKEN,
+            webhook_url=WEBHOOK_URL
         )
-        
+
     except Exception as e:
         logger.error(f"❌ فشل في تشغيل البوت: {e}", exc_info=True)
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
