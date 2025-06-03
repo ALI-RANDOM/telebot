@@ -16,12 +16,12 @@ from telegram.ext import (
 )
 
 # =====================================
-# إعدادات البوت من متغيرات البيئة
+# إعدادات البوت (التوكن مُضمن ثابتًا)
 # =====================================
-BOT_TOKEN = os.getenv("7358926740:AAGfwIacwgrVHcueGyMvV0ftBSlTXPu1kJ4")
-# Render يوفر المتغير RENDER_EXTERNAL_URL كعنوان HTTPS للتطبيق (مثل: https://my-app.onrender.com)
+BOT_TOKEN = "7358926740:AAGfwIacwgrVHcueGyMvV0ftBSlTXPu1kJ4"
+# استخدم المتغيّر RENDER_EXTERNAL_URL الذي يضبطه Render تلقائيًا
 EXTERNAL_URL = os.getenv("https://telebot-8o93.onrender.com")
-if BOT_TOKEN and EXTERNAL_URL:
+if EXTERNAL_URL:
     WEBHOOK_URL = f"{EXTERNAL_URL}/{BOT_TOKEN}"
 else:
     WEBHOOK_URL = None
@@ -49,7 +49,7 @@ ALL_BUTTONS = [
     ("📌 القوانين", "https://t.me/+1BUMvsFtRc00MGQ8"),
     ("🎯 المهام", "https://t.me/+LK8rr9LJXk1kYmE0"),
     ("🧾 الوصف", "https://t.me/HELL_GTA"),
-    ("🔗 رتب", "https://t.me/+RiPkO-JHXt9iMTZi"),  # الزر الجديد
+    ("🔗 رتب", "https://t.me/+RiPkO-JHXt9iMTZi"),
     (
         "🎮 رابط كلان هيل",
         "https://socialclub.rockstargames.com/crew/the_best_colors_to_u/wall",
@@ -600,10 +600,10 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
 # =====================================
 def main():
     if not BOT_TOKEN:
-        logger.error("❌ التوكن غير محدد في متغير البيئة BOT_TOKEN!")
+        logger.error("❌ التوكن غير محدد!")
         return
     if not WEBHOOK_URL:
-        logger.error("❌ لم يتم تحديد EXTERNAL_URL (RENDER_EXTERNAL_URL) أو BOT_TOKEN في البيئة!")
+        logger.error("❌ لم يتم تحديد EXTERNAL_URL (RENDER_EXTERNAL_URL)!")
         return
 
     logger.info("🚀 بدء تشغيل البوت مع Webhook...")
