@@ -637,6 +637,10 @@ def main():
         # حذف أي تحديثات قديمة قبل تشغيل webhook
         application.bot.delete_webhook(drop_pending_updates=True)
 
+        from plugins.currency_plugin import register as register_currency
+register_currency(application)
+
+
         # تشغيل webhook: الاستماع على المنفذ الذي يوفره Render (ENV PORT)، ومسار URL هو التوكن
         port = int(os.getenv("PORT", "8443"))
         application.run_webhook(
