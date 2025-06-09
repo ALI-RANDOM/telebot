@@ -31,7 +31,7 @@ async def is_admin(update: Update, user_id: int) -> bool:
     try:
         member = await update.effective_chat.get_member(user_id)
         return member.status in ("administrator", "creator")
-    except:
+    except Exception:
         return False
 
 # -------------------------------------
@@ -47,22 +47,18 @@ async def currency_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = data.get(user_id, {"messages": 0, "currency": 0, "next_award": 500})
 
     user["messages"] += 1
-    # عند بلوغ العتبة، نضيف 1 عملة ونرفع العتبة بمقدار 500 رسالة
+    # عند بلوغ العتبة، نضيف عملة ونرفع العتبة بمقدار 500 رسالة
     if user["messages"] >= user["next_award"]:
         user["currency"] += 1
+        awarded_at = user["next_award"]
         user["next_award"] += 500
         await msg.reply_text(
-            f"🎉 مبروك! حصلت على 1 عملة لبلوغهك {user['next_award']-500} رسالة.\n"
+            f"🎉 مبروك! حصلت على 1 عملة لبلوغهك {awarded_at} رسالة.\n"
             f"رصيدك الآن: {user['currency']} عملة."
         )
 
     data[user_id] = user
     save_data(data)
-
-currency_message_handler = MessageHandler(
-    filters.TEXT & ~filters.COMMAND,
-    currency_message
-)
 
 # -------------------------------------
 # أمر إعطاء العملات (/اعطي) – رد على رسالة المستخدم مع عدد النقاط
@@ -79,7 +75,7 @@ async def give_currency(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         amount = int(context.args[0])
-    except:
+    except ValueError:
         return await msg.reply_text("❌ الرجاء إدخال عدد صحيح.")
 
     target = msg.reply_to_message.from_user
@@ -91,7 +87,8 @@ async def give_currency(update: Update, context: ContextTypes.DEFAULT_TYPE):
     save_data(data)
 
     await msg.reply_text(
-        f"✅ تم إضافة {amount} عملة إلى {target.mention_html()}.\n"
+        f"✅ تم إضافة {amount} عملة إلى {target.mention_html()}.
+"
         f"رصيده الآن: {user_data['currency']} عملة.",
         parse_mode="HTML"
     )
@@ -111,7 +108,7 @@ async def subtract_currency(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         amount = int(context.args[0])
-    except:
+    except ValueError:
         return await msg.reply_text("❌ الرجاء إدخال عدد صحيح.")
 
     target = msg.reply_to_message.from_user
@@ -123,7 +120,8 @@ async def subtract_currency(update: Update, context: ContextTypes.DEFAULT_TYPE):
     save_data(data)
 
     await msg.reply_text(
-        f"✅ تم خصم {amount} عملة من {target.mention_html()}.\n"
+        f"✅ تم خصم {amount} عملة من {target.mention_html()}.
+"
         f"رصيده الآن: {user_data['currency']} عملة.",
         parse_mode="HTML"
     )
@@ -137,6 +135,13 @@ async def my_balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
     bal = data.get(user_id, {}).get("currency", 0)
     await update.effective_message.reply_text(f"💰 رصيدك: {bal} عملة.")
 
+# -------------------------------------
+# تسجيل المعالجات
+# -------------------------------------
 give_handler      = CommandHandler("اعطي", give_currency)
 subtract_handler  = CommandHandler("خصم", subtract_currency)
 balance_handler   = CommandHandler("رصيدي", my_balance)
+currency_message_handler = MessageHandler(
+    filters.TEXT & ~filters.COMMAND,
+    currency_message
+)
