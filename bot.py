@@ -15,6 +15,13 @@ from telegram.ext import (
     ContextTypes,
 )
 
+from commands.currency import (
+    currency_message_handler,
+    give_handler,
+    subtract_handler,
+    balance_handler
+)
+
 # =====================================
 # إعدادات البوت (التوكن ثابتًا)
 # =====================================
@@ -609,6 +616,13 @@ def main():
     logger.info("🚀 بدء تشغيل البوت مع Webhook…")
     try:
         application = Application.builder().token(BOT_TOKEN).build()
+
+
+        application.add_handler(currency_message_handler, group=0)
+application.add_handler(give_handler)
+application.add_handler(subtract_handler)
+application.add_handler(balance_handler)
+
 
         # إضافة الـ Handlers الأساسية
         application.add_handler(CommandHandler("start", start_command))
