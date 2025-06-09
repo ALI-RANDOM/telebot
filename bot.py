@@ -617,7 +617,7 @@ def main():
     try:
         application = Application.builder().token(BOT_TOKEN).build()
 
-      application.add_handler(currency_message_handler, group=0)
+        application.add_handler(currency_message_handler, group=0)
         application.add_handler(give_handler)
         application.add_handler(subtract_handler)
         application.add_handler(balance_handler)
